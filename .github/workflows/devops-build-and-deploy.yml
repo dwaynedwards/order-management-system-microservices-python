@@ -1,0 +1,59 @@
+name: Ordering System Github Actions Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.12
+
+      - name: Install deps
+        run: |
+          make install
+
+      - name: Format with black
+        run: |
+          make format
+
+      - name: Lint with pylint
+        run: |
+          make lint
+
+      - name: Test with pytest
+        run: |
+          make test
+
+      - name: Build code
+        run: |
+          make build
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Deploy code
+        run: |
+          make deploy
