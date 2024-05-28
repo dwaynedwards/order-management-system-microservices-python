@@ -1,0 +1,11 @@
+[run]
+concurrency = thread,greenlet
+omit = 
+  **/__init__.py
+  orders_service/app.py
+  orders_service/common.py
+  orders_service/config.py
+  orders_service/exceptions.py
+  orders_service/models.py
+  orders_service/schemas.py
+  orders_service/session.py
